@@ -47,12 +47,33 @@ export default function Home() {
 
   const handleSubmit = async () => {
     if (!selectedDevice) return;
-    const updated = { ...selectedDevice, device_type: form.device_type, credentials: { ...form } };
-    await fetch(`"https://netorb.onrender.com/devices"/${selectedDevice.ip}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updated)
-    });
+  
+    const updated = {
+      ...selectedDevice,
+      device_type: form.device_type,
+      credentials: {
+        username: form.username,
+        password: form.password,
+        protocol: form.protocol
+      }
+    };
+  
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/devices/${selectedDevice.ip}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated)
+      });
+  
+      if (res.ok) {
+        console.log("✅ Device updated");
+      } else {
+        console.error("❌ Failed to update device", await res.text());
+      }
+    } catch (err) {
+      console.error("❌ Network error:", err);
+    }
+  
     closeModal();
     location.reload();
   };
