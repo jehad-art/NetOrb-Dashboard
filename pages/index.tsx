@@ -20,9 +20,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [form, setForm] = useState({ device_type: '', protocol: '', username: '', password: '' });
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE
 
   useEffect(() => {
-    fetch("https://netorb.onrender.com/devices")
+    fetch(`${API_BASE}/devices`)
       .then((res) => res.json())
       .then((data) => {
         setDevices(data);
