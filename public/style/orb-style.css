@@ -1,0 +1,112 @@
+body{font-family: 'Maven Pro', sans-serif;color:#444;font-size:10pt;background-color:#ddd;}
+
+/*main Elemenets*/
+.top-bar{position:fixed;top:0px;left:0px;width:100%;height:60px;background-color:#444;z-index:9;}
+.bottom-bar{position:fixed;top:1130px;left:0px;width:100%;height:2px;z-index:9;}
+.side-bar{position:fixed;top:60px;left:0px;width:13.5%;height:1020px;background-color:#333;color:#fff;border-right:thin solid #000;box-shadow:2px 0px 5px grey;}
+.tbl{width:100%;height:100%;text-align:center;border-collapse:collapse;border-spacing:0px;border:none;}
+.tbl2{width:94%;height:94%;text-align:left;border-collapse:collapse;border-spacing:0px;border:none;margin:3%;}
+.tiles{width:100%;height:100%;}
+.menu{width:150px;height:100%;cursor:pointer;font-size:12pt;color:#fff;transition:background-color .2s,color .2s;}
+.menu2{width:100%;height:40px;cursor:pointer;font-size:12pt;color:#fff;transition:background-color .2s,color .2s;}
+.menu:hover{background-color:#fff;color:#444;}
+.menu2:hover{background-color:#fff;color:#444;}
+.profile{width:40px;height:40px;transition:background-color .3s;border-radius:100%;cursor:pointer;}
+.profile:hover{background-color:#00CCB1;}
+.sub-menu{position: absolute;top:50px;width: 250px;height: 270px;background-color:#fff;box-shadow:2px 2px 5px #aaa;color:#444;opacity:0;visibility:hidden;}
+.sub-menu td:hover{background-color:#ddd;}
+.the-body{position:absolute;top:80px;left:14%;width:86%;height:89%;}
+
+/*Boxes*/
+.switch-primary-box{position:absolute;width:33.4%;min-width:438px;height:150px;left:33.5%;top:20px;border:1px solid #888;color:#666;background-color:#fff;z-index:4;box-shadow:2px 2px 5px #ccc;}
+.switch-secondary-box{position:absolute;width:33.4%;min-width:438px;height:820px;left:33.5%;top:180px;border:1px solid #888;background-color:#fff;z-index:4;box-shadow:2px 2px 5px #ccc;}
+.Gigabit-box{position:absolute;width:16.8%;min-width:265px;height:300px;left:67.4%;top:20px;border:1px solid #888;background-color:#fff;z-index:3;box-shadow:2px 2px 5px #ccc;}
+.Automation-box{position:absolute;width:16.8%;min-width:265px;height:220px;left:67.4%;top:330px;border:1px solid #888;background-color:#fff;z-index:3;box-shadow:2px 2px 5px #ccc;}
+.Con-Devices-box{position:absolute;width:16.8%;min-width:265px;height:440px;left:67.4%;top:560px;border:1px solid #888;background-color:#fff;z-index:3;box-shadow:2px 2px 5px #ccc;}
+.con-path-box{position:absolute;top:20px;border:1px solid #888;left:84.7%;width:14.2%;min-width:199px;height:820px;background-color:#fff;z-index:2;box-shadow:2px 2px 5px #ccc;}
+.other-box{position:absolute;width:14.2%;min-width:199px;height:150px;left:84.7%;top:850px;background-color:#fff;z-index:2;border:thin solid #00CCB1;box-shadow:2px 2px 5px #ccc;}
+.zombie-box{z-index:11;position:absolute;top:120px;left:14%;width:36px;height:36px;background-color:#fff;opacity:0.7;border:thin solid #444;box-shadow:2px 2px 5px #ccc;transition:opacity 1s;transform:translate(-50%,-105%);}
+
+/*Switch Details*/
+.switch{width:425px;height:50px;border:1px solid #888;background-color:#fff;margin:0 auto;}
+.blade{width:92px;height:40px;text-align:center;}
+.blade td{border-bottom:1px solid #555;width:25px;}
+.port{background-size:100% 100%;width:19px;height:15px;cursor:pointer;}
+.aux-con{width:30px;height:40px;text-align:center;}
+.color-state{width:10px;height:10px;background-color:yellow;border:thin solid #888;}
+
+/*Map Details*/
+.map{background-image:url('../Images/map-0.png');background-size:100% 100%;width:33%;height:980px;position:absolute;top:20px;left:0%;border:1px solid #888;box-shadow:2px 2px 5px #ccc;}
+.desk-active{position:absolute;top:123px;left:25%;width:6.7%;height:40px;border:1px solid #004488;background-color:#00CCB1;opacity:0.7;cursor:pointer;}
+.desk{position:absolute;top:163px;left:25%;width:6.7%;height:40px;border:1px solid #000;background-color:#777;opacity:0.5;cursor:pointer;transition:background-color .2s,opacity .2s;}
+.desk:hover{background-color:#bbb;opacity:0.7;}
+.desk:active{background-color:#eee;opacity:0.7;}
+
+/*inputs*/
+input[type=button]{background-color:#fff;color:#00CCB1;font-weight:bold;border:thin solid #00CCB1;width:110px;height:35px;border-radius:0px;cursor:pointer;transition:background-color 0.2s, border .2s, colo .2s}
+input[type=button]:hover{background-color:#00CCB1 !important;border:thin solid #00CCB1 !important; color:#fff;}
+input[type=text],select,textarea{color:#888;font-weight:bold;border:none;border:thin solid #aaa;outline:none;width:150px;padding: 7px 10px;margin: 5px 0;box-sizing: border-box;background-color:#eee;border-radius:5px}
+input[type=text]:hover,select:hover,textarea:hover{background-color:#ccc !important;}
+input[type=text]:focus,select:focus,textarea:focus{background-color:#ccc !important;}
+.side-bar select{outline:none;width:95%;-webkit-appearance: none;-moz-appearance: none;appearance: none;background: url("../Images/sort-down2.png") 96% / 5% no-repeat #eee;background-color:#444;color:#fff;transition:background-color .2s;border-radius:50px;}
+.side-bar select:focus{background-color:#222}
+.side-bar td{padding-left:10px;}
+.small-text{width:80px !important;}
+.med-text{width:170px !important;}
+.search{width:90% !important;background-color:#bbb !important;border:thin solid #aaa !important;}
+
+/*Others*/
+.pattern{position:relative;top:0px;left:0%;width:100%;height:2px;background-image:url('../Images/pattern.png');}
+a{color:#017770;text-decoration:none;}
+a:hover{color:#00CCB1;text-decoration:underline;}
+.bullet{width:10px;height:10px;background-color:#00CCB1;border-radius:10px;cursor:pointer;opacity:0.5;}
+.bullet:hover{opacity:1;}
+.help{position:absolute;top:10px;right:10px;width:17px;height:17px;background-color:#00CCB1;border-radius:17px;cursor:pointer;color:#fff;font-weight:800;}
+.address{position:absolute;top:67px;left:14%;z-index:8;}
+.save-all{position:absolute;top:67px;right:1%;z-index:8;}
+::selection {
+  color: white;
+  background: #00CCB1;
+}
+
+/*Jedo Maps*/
+.Jedo-map{width:98%;height:980px;position:absolute;top:20px;left:0%;border:1px solid #bbb;box-shadow:2px 2px 5px #fff;overflow:hidden;}
+.Jedo-map-Div{width:1810px;height:1180px;position:absolute;top:-100px;left:-100px;background-image:url('../Images/Saudi-map-white.png');background-size:100% 100%;
+cursor:grap;cursor: -moz-grab;cursor: -webkit-grab;}
+.Jedo-map-Div:active{cursor: grabbing;cursor: -moz-grabbing;cursor: -webkit-grabbing;}
+.location{width:28px;height:40px;opacity:0.9;position:absolute;left:860px;top:450px;cursor:pointer;}
+.resize{position:absolute;right:10px;bottom:50px;width:30px;height:30px;background-color:#fff;box-shadow:2px 2px 5px transparent;border:thin solid #bbb;border-radius:10px;font-size:19pt;color:#666;cursor:pointer;transition:background-color .7s;}
+.resize:hover{background-color:#ddd;}
+
+/* Message box starts here */
+.container {clear: both;position: absolute;left:890px;top:450px;transition:opacity 1s;z-index:10;}
+.container .arrow {width: 12px;height: 120px;overflow: hidden;position: relative;float: left;top: 6px;right: -1px;}
+.container .arrow .outer {width: 0;height: 0;border-right: 20px solid #999;border-top: 10px solid transparent;border-bottom: 10px solid transparent;position: absolute;top: 0;left: 0;}
+.container .arrow .inner {width: 0;height: 0;border-right: 20px solid #ffffff;border-top: 10px solid transparent;border-bottom: 10px solid transparent;position: absolute;top: 0;left: 2px;}
+.container .message-body {float: left;width: 200px;height: auto;border: 1px solid #fff;background-color: #ffffff;border: 1px solid #999;padding: 6px 8px;border-radius: 5px;box-shadow:2px 2px 5px #aaa;}
+.container .message-body p {margin: 0;}
+
+
+/*Rack*/
+.rack-box{position:absolute;width:17.4%;height:880px;top:20px;left:0%;border:1px solid #bbb;color:#666;background-color:#fff;z-index:4;box-shadow:1px 1px 2px #aaa;font-size:8pt;}
+.rack-box:hover{border-color:#4488bb;}
+.rack-box td{border:thin solid #bbb;}
+.vue{text-align:center;width:100%;height:100%;border-collapse:collapse;border-spacing:0px;border:none;}
+.vue td{width:95%;background-color:#999;color:white;border:none;border-left:10px solid #F55D83;transition:background-color .2s,color .2s,border-left-width .2s;cursor:pointer;}
+.vue td:hover{background-color:#ccc;color:#555;border-left-width:16px;}
+.vue td:active{background-color:#eee;color:#555;}
+.Clusters-box{position:absolute;width:25.4%;height:430px;top:20px;left:17.9%;border:1px solid #bbb;color:#666;background-color:#fff;z-index:4;box-shadow:1px 1px 2px #aaa;font-size:8pt;}
+.Clusters-box:hover{border-color:#4488bb;}
+.Device-Details-box{position:absolute;width:19.9%;height:880px;top:20px;left:43.8%;border:1px solid #bbb;color:#666;background-color:#fff;z-index:4;box-shadow:1px 1px 2px #aaa;font-size:8pt;}
+.Device-Details-box:hover{border-color:#4488bb;}
+.Device-Details-box input[type=text],select,textarea{width:90%;}
+.Rack-Details-box{position:absolute;width:19.9%;height:380px;top:20px;left:64.2%;border:1px solid #bbb;color:#666;background-color:#fff;z-index:4;box-shadow:1px 1px 2px #aaa;font-size:8pt;}
+.Rack-Details-box:hover{border-color:#4488bb;}
+.Rack-Details-box input[type=text],select,textarea{width:90%;}
+.Rack-list-box{position:absolute;width:14.4%;height:380px;top:20px;left:84.6%;border:1px solid #bbb;color:#666;background-color:#fff;z-index:4;box-shadow:1px 1px 2px #aaa;font-size:8pt;}
+.Rack-list-box:hover{border-color:#4488bb;}
+.Rack-list-box td{border-bottom:thin solid #bbb;cursor:pointer;}
+.Rack-list-box td:hover{background-color:#ddd;}
+.title-bar{border-bottom:thin solid #bbb;color:#999;font-size:10pt;height:43px;background-color:#fff}
+.title-bar:hover{background-color:#cceeff;}
+.drop-list{position:relative;width:12px;height:6px;background-image:url("../Images/arrr.png");background-size:100% 100%}
