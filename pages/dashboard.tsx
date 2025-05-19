@@ -1,21 +1,33 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Table, TableHead, TableHeader, TableRow,
+  TableBody, TableCell
+} from "@/components/ui/table";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-const dummyDevices = [
+type Device = {
+  ip: string;
+  hostname: string;
+  type: string;
+  score: number;
+  lastSeen: string;
+  misconfigs: string[];
+};
+
+const dummyDevices: Device[] = [
   {
     ip: "10.20.51.10",
     hostname: "core-router",
     type: "Router",
     score: 58,
     lastSeen: "2025-05-17",
-    misconfigs: ["telnet_enabled", "missing_acl"]
+    misconfigs: ["telnet_enabled", "missing_acl"],
   },
   {
     ip: "10.20.51.11",
@@ -23,12 +35,18 @@ const dummyDevices = [
     type: "Switch",
     score: 82,
     lastSeen: "2025-05-18",
-    misconfigs: []
-  }
+    misconfigs: [],
+  },
 ];
 
 export default function Dashboard() {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState<Device | null>(null);
+
+  const getScoreVariant = (score: number) => {
+    if (score < 60) return "destructive";
+    if (score < 80) return "secondary";
+    return "default";
+  };
 
   return (
     <div className="grid grid-cols-12 gap-4 p-4">
@@ -78,21 +96,19 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {dummyDevices.map((d) => (
-                    <TableRow key={d.ip}>
-                      <TableCell>{d.ip}</TableCell>
-                      <TableCell>{d.hostname}</TableCell>
-                      <TableCell>{d.type}</TableCell>
+                  {dummyDevices.map((device, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{device.ip}</TableCell>
+                      <TableCell>{device.hostname}</TableCell>
+                      <TableCell>{device.type}</TableCell>
                       <TableCell>
-                        <Badge
-                          variant={d.score < 60 ? "destructive" : d.score < 80 ? "warning" : "success"}
-                        >
-                          {d.score}%
+                        <Badge variant={getScoreVariant(device.score)}>
+                          {device.score}%
                         </Badge>
                       </TableCell>
-                      <TableCell>{d.lastSeen}</TableCell>
+                      <TableCell>{device.lastSeen}</TableCell>
                       <TableCell>
-                        <Button size="sm" onClick={() => setSelected(d)}>View</Button>
+                        <Button size="sm" onClick={() => setSelected(device)}>View</Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -103,7 +119,7 @@ export default function Dashboard() {
         </Card>
       </main>
 
-      {/* Device Detail Sheet */}
+      {/* Device Detail Drawer */}
       <Sheet open={!!selected} onOpenChange={() => setSelected(null)}>
         <SheetContent className="w-[500px]">
           <SheetHeader>
