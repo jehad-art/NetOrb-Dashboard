@@ -66,12 +66,12 @@ export default function Home() {
       });
   
       if (res.ok) {
-        console.log("✅ Device updated");
+        console.log("Device updated");
       } else {
-        console.error("❌ Failed to update device", await res.text());
+        console.error("Failed to update device", await res.text());
       }
     } catch (err) {
-      console.error("❌ Network error:", err);
+      console.error("Network error:", err);
     }
   
     closeModal();
