@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useEffect } from "react";
-import "../public/style/orb-style.css";
+import '../styles/orb-style.css';
 import type { AppProps } from 'next/app';
 
 
