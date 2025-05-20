@@ -102,40 +102,7 @@ type Device = {
   threats: Threat[]
 }
 
-const [devices, setDevices] = useState<Device[]>([]);
-const [loading, setLoading] = useState(true);
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
-useEffect(() => {
-    fetch(`${API_BASE}/configs`)
-      .then((res) => res.json())
-      .then((data) => {
-        const formattedDevices = data.map((config: any) => ({
-          id: config._id,
-          name: config.hostname || config.device_ip,
-          type: config.device_type || "Network",
-          ip: config.device_ip,
-          status: "Online",
-          threats: [...(config.analysis?.misconfigurations || []), ...(config.analysis?.missing_recommendations || [])].map((issue: any, i: number) => ({
-            id: `ANALYSIS-${i}`,
-            name: issue.tag,
-            type: issue.category === "misconfiguration" ? "Misconfiguration" : "Recommendation",
-            description: issue.description,
-            severity: issue.severity[0].toUpperCase() + issue.severity.slice(1),
-            status: "Active",
-            detectedAt: config.collected_at,
-            category: issue.category,
-            source: "System",
-            affectedResource: config.device_ip,
-            impactLevel: issue.severity === "critical" ? "High" : issue.severity === "high" ? "High" : issue.severity === "medium" ? "Medium" : "Low",
-            recommendedAction: "Review and correct the configuration",
-          })),
-        }));
-  
-        setDevices(formattedDevices);
-        setLoading(false);
-      });
-  }, []);
   
 
 const deviceTypeIcons = {
@@ -155,6 +122,40 @@ const threatSeverityIcons = {
 }
 
 export default function ThreatsPage() {
+    const [devices, setDevices] = useState<Device[]>([]);
+    const [loading, setLoading] = useState(true);
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
+    useEffect(() => {
+        fetch(`${API_BASE}/configs`)
+        .then((res) => res.json())
+        .then((data) => {
+            const formattedDevices = data.map((config: any) => ({
+            id: config._id,
+            name: config.hostname || config.device_ip,
+            type: config.device_type || "Network",
+            ip: config.device_ip,
+            status: "Online",
+            threats: [...(config.analysis?.misconfigurations || []), ...(config.analysis?.missing_recommendations || [])].map((issue: any, i: number) => ({
+                id: `ANALYSIS-${i}`,
+                name: issue.tag,
+                type: issue.category === "misconfiguration" ? "Misconfiguration" : "Recommendation",
+                description: issue.description,
+                severity: issue.severity[0].toUpperCase() + issue.severity.slice(1),
+                status: "Active",
+                detectedAt: config.collected_at,
+                category: issue.category,
+                source: "System",
+                affectedResource: config.device_ip,
+                impactLevel: issue.severity === "critical" ? "High" : issue.severity === "high" ? "High" : issue.severity === "medium" ? "Medium" : "Low",
+                recommendedAction: "Review and correct the configuration",
+            })),
+            }));
+    
+            setDevices(formattedDevices);
+            setLoading(false);
+        });
+    }, []);
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [expandedDevices, setExpandedDevices] = useState<string[]>([])
