@@ -1,5 +1,5 @@
 "use client"
-
+import axios from "axios"
 import type React from "react"
 
 import { useState } from "react"
@@ -54,6 +54,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "@/hooks/use-toast"
+
 
 type NavItem = {
   name: string
@@ -246,44 +247,66 @@ export default function DiscoveredPage() {
   }
 
   // Handle form submission
-  const handleSubmit = (deviceId: string) => {
+  const handleSubmit = async (deviceId: string) => {
     const device = discoveredDevices.find((d) => d.id === deviceId)
     const deviceData = formData[deviceId]
 
-    if (!deviceData.deviceType) {
-      toast({
-        title: "Validation Error",
-        description: "Device type is required",
-        variant: "destructive",
+    if (!deviceData.deviceType || !deviceData.protocol) {
+        toast({
+          title: "Validation Error",
+          description: "Device type and protocol are required",
+          variant: "destructive",
+        })
+        return
+      }
+    
+      try {
+        const res = await axios.put(
+          `https://netorb.onrender.com/devices/${device?.ip}`,
+          {
+            device_type: deviceData.deviceType,
+            protocol: deviceData.protocol,
+            username: deviceData.username,
+            password: deviceData.password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+    
+        if (res.status === 200) {
+          toast({
+            title: "Device Added",
+            description: `Device ${device?.ip} has been successfully added to the system.`,
+          })
+        } else {
+          toast({
+            title: "API Error",
+            description: `Failed to add device: ${res.statusText}`,
+            variant: "destructive",
+          })
+        }
+      } catch (error: any) {
+        toast({
+          title: "Request Failed",
+          description: error.message || "An error occurred while submitting the form.",
+          variant: "destructive",
+        })
+      }
+    
+      // Reset form and close expansion
+      setFormData({
+        ...formData,
+        [deviceId]: {
+          deviceType: "",
+          protocol: "",
+          username: "",
+          password: "",
+        },
       })
-      return
-    }
-
-    if (!deviceData.protocol) {
-      toast({
-        title: "Validation Error",
-        description: "Protocol is required",
-        variant: "destructive",
-      })
-      return
-    }
-
-    toast({
-      title: "Device Added",
-      description: `Device ${device?.ip} has been successfully added to the system.`,
-    })
-
-    // Reset form and close expansion
-    setFormData({
-      ...formData,
-      [deviceId]: {
-        deviceType: "",
-        protocol: "",
-        username: "",
-        password: "",
-      },
-    })
-    setExpandedDevices(expandedDevices.filter((id) => id !== deviceId))
+      setExpandedDevices(expandedDevices.filter((id) => id !== deviceId))
   }
 
   return (
