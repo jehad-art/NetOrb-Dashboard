@@ -157,7 +157,7 @@ export default function ThreatsPage() {
             recommendedAction: "Review and correct the configuration",
           })),
         }))
-
+        console.log("Fetched Configs:", data);
         setDevices(formattedDevices)
       })
   }, [])
