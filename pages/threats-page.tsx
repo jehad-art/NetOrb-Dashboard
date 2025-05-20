@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   AlertTriangle,
   Bell,
@@ -56,242 +55,7 @@ import {
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 
-type NavItem = {
-  name: string
-  icon: React.ElementType
-  href: string
-  alert?: number
-}
-
-const navItems: NavItem[] = [
-  { name: "Dashboard", icon: Home, href: "/" },
-  { name: "Devices", icon: Laptop, href: "/devices", alert: 3 },
-  { name: "Network", icon: Ethernet, href: "#" },
-  { name: "Threats", icon: AlertTriangle, href: "/threats", alert: 5 },
-  { name: "Firewall", icon: Shield, href: "#" },
-]
-
-type DeviceType = "Server" | "Workstation" | "Mobile" | "IoT" | "Network" | "Tablet"
-
-type ThreatSeverity = "Critical" | "High" | "Medium" | "Low"
-
-type ThreatStatus = "Active" | "Investigating" | "Remediation" | "Resolved" | "False Positive"
-
-type Threat = {
-  id: string
-  name: string
-  description: string
-  type: string
-  severity: ThreatSeverity
-  status: ThreatStatus
-  detectedAt: string
-  category: string
-  source: string
-  affectedResource: string
-  impactLevel: "High" | "Medium" | "Low"
-  recommendedAction: string
-  cve?: string
-}
-
-type Device = {
-  id: string
-  name: string
-  type: DeviceType
-  ip: string
-  status: "Online" | "Offline" | "Warning"
-  threats: Threat[]
-}
-
-const devices: Device[] = [
-  {
-    id: "DEV-001",
-    name: "R01",
-    type: "Network",
-    ip: "10.20.51.10",
-    status: "Online",
-    threats: [
-      {
-        id: "THR-001",
-        name: "Suspicious Login Attempt",
-        type: "Intrusion Attempt",
-        description:
-          "Multiple failed login attempts detected from unusual IP address. Pattern suggests brute force attack.",
-        severity: "High",
-        status: "Active",
-        detectedAt: "2023-05-20T10:30:00Z",
-        category: "Authentication",
-        source: "172.16.254.1",
-        affectedResource: "/admin",
-        impactLevel: "Medium",
-        recommendedAction: "Block source IP and review authentication logs",
-        cve: "CVE-2023-1234",
-      },
-      {
-        id: "THR-002",
-        name: "Outdated SSL Certificate",
-        type: "Configuration Issue",
-        description: "SSL certificate will expire in less than 7 days. This may lead to security warnings for users.",
-        severity: "Medium",
-        status: "Investigating",
-        detectedAt: "2023-05-19T14:15:00Z",
-        category: "Configuration",
-        source: "System",
-        affectedResource: "HTTPS Service",
-        impactLevel: "Low",
-        recommendedAction: "Renew SSL certificate immediately",
-      },
-    ],
-  },
-  {
-    id: "DEV-002",
-    name: "Linux Server",
-    type: "Server",
-    ip: "10.20.51.2",
-    status: "Warning",
-    threats: [
-      {
-        id: "THR-003",
-        name: "Unusual Database Query Pattern",
-        type: "SQL Injection",
-        description: "Potential SQL injection attempt detected. Unusual query patterns with malformed SQL statements.",
-        severity: "Critical",
-        status: "Active",
-        detectedAt: "2023-05-20T09:45:00Z",
-        category: "Database",
-        source: "Web Application",
-        affectedResource: "Customer Database",
-        impactLevel: "High",
-        recommendedAction: "Patch application and review database access logs",
-        cve: "CVE-2023-5678",
-      },
-    ],
-  },
-  {
-    id: "DEV-003",
-    name: "CEO Laptop",
-    type: "Mobile",
-    ip: "192.168.1.35",
-    status: "Offline",
-    threats: [
-      {
-        id: "THR-004",
-        name: "Malware Detected",
-        type: "Trojan",
-        description: "Trojan horse detected in email attachment. File has been quarantined but may have executed.",
-        severity: "Critical",
-        status: "Remediation",
-        detectedAt: "2023-05-18T16:20:00Z",
-        category: "Malware",
-        source: "Email",
-        affectedResource: "File System",
-        impactLevel: "High",
-        recommendedAction: "Run full system scan and update antivirus definitions",
-        cve: "CVE-2023-9012",
-      },
-    ],
-  },
-  {
-    id: "DEV-004",
-    name: "Marketing Tablet",
-    type: "Tablet",
-    ip: "192.168.1.72",
-    status: "Online",
-    threats: [],
-  },
-  {
-    id: "DEV-005",
-    name: "IoT Gateway",
-    type: "IoT",
-    ip: "192.168.1.50",
-    status: "Warning",
-    threats: [
-      {
-        id: "THR-005",
-        name: "Firmware Vulnerability",
-        type: "Known Vulnerability",
-        description: "Known vulnerability in current firmware version that could allow remote code execution.",
-        severity: "High",
-        status: "Investigating",
-        detectedAt: "2023-05-17T11:10:00Z",
-        category: "Vulnerability",
-        source: "System",
-        affectedResource: "Firmware v2.1.3",
-        impactLevel: "High",
-        recommendedAction: "Update firmware to latest version immediately",
-        cve: "CVE-2023-3456",
-      },
-      {
-        id: "THR-006",
-        name: "Unusual Traffic Pattern",
-        type: "Suspicious Activity",
-        description: "Unexpected outbound traffic to unknown IP addresses. May indicate command and control activity.",
-        severity: "Medium",
-        status: "Active",
-        detectedAt: "2023-05-20T08:30:00Z",
-        category: "Network",
-        source: "Device",
-        affectedResource: "Network Interface",
-        impactLevel: "Medium",
-        recommendedAction: "Block outbound connections and investigate traffic patterns",
-      },
-    ],
-  },
-  {
-    id: "DEV-006",
-    name: "Network Switch",
-    type: "Network",
-    ip: "192.168.1.2",
-    status: "Online",
-    threats: [
-      {
-        id: "THR-007",
-        name: "Port Scan Detected",
-        type: "Reconnaissance",
-        description: "Systematic port scan from internal network. May indicate compromised device or insider threat.",
-        severity: "Medium",
-        status: "Resolved",
-        detectedAt: "2023-05-16T13:25:00Z",
-        category: "Network",
-        source: "192.168.1.100",
-        affectedResource: "All Ports",
-        impactLevel: "Low",
-        recommendedAction: "Identify source device and investigate",
-      },
-    ],
-  },
-  {
-    id: "DEV-007",
-    name: "Admin Workstation",
-    type: "Workstation",
-    ip: "192.168.1.15",
-    status: "Online",
-    threats: [],
-  },
-  {
-    id: "DEV-008",
-    name: "Sales Phone",
-    type: "Mobile",
-    ip: "192.168.1.85",
-    status: "Online",
-    threats: [
-      {
-        id: "THR-008",
-        name: "Suspicious App Detected",
-        type: "Potentially Unwanted Application",
-        description:
-          "Application with excessive permissions detected. Requesting access to contacts, location, and camera.",
-        severity: "Low",
-        status: "False Positive",
-        detectedAt: "2023-05-19T09:15:00Z",
-        category: "Application",
-        source: "App Store",
-        affectedResource: "User Data",
-        impactLevel: "Low",
-        recommendedAction: "Review application permissions and consider removal",
-      },
-    ],
-  },
-]
+// Types
 
 const deviceTypeIcons = {
   Server: <Server className="h-5 w-5 text-blue-500" />,
@@ -308,43 +72,112 @@ const threatSeverityIcons = {
   Medium: <Shield className="h-5 w-5 text-blue-500" />,
   Low: <ShieldCheck className="h-5 w-5 text-emerald-500" />,
 }
+type NavItem = {
+    name: string
+    icon: React.ElementType
+    href: string
+    alert?: number
+  }
+  
+  const navItems: NavItem[] = [
+    { name: "Dashboard", icon: Home, href: "/" },
+    { name: "Devices", icon: Laptop, href: "/devices", alert: 3 },
+    { name: "Network", icon: Ethernet, href: "#" },
+    { name: "Threats", icon: AlertTriangle, href: "/threats", alert: 5 },
+    { name: "Firewall", icon: Shield, href: "#" },
+  ]
 
 export default function ThreatsPage() {
+    type ThreatSeverity = "Critical" | "High" | "Medium" | "Low"
+
+    type ThreatStatus = "Active" | "Investigating" | "Remediation" | "Resolved" | "False Positive"
+
+    type Threat = {
+    id: string
+    name: string
+    description: string
+    type: string
+    severity: ThreatSeverity
+    status: ThreatStatus
+    detectedAt: string
+    category: string
+    source: string
+    affectedResource: string
+    impactLevel: "High" | "Medium" | "Low"
+    recommendedAction: string
+    cve?: string
+    }
+
+    type DeviceType = "Server" | "Workstation" | "Mobile" | "IoT" | "Network" | "Tablet"
+
+    type Device = {
+    id: string
+    name: string
+    type: DeviceType
+    ip: string
+    status: "Online" | "Offline" | "Warning"
+    threats: Threat[]
+    }
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [expandedDevices, setExpandedDevices] = useState<string[]>([])
-  const [severityFilter, setSeverityFilter] = useState<ThreatSeverity[]>(["Critical", "High", "Medium", "Low"])
-  const [statusFilter, setStatusFilter] = useState<ThreatStatus[]>([
-    "Active",
-    "Investigating",
-    "Remediation",
-    "Resolved",
-    "False Positive",
-  ])
+  const [severityFilter, setSeverityFilter] = useState(["Critical", "High", "Medium", "Low"])
+  const [statusFilter, setStatusFilter] = useState(["Active", "Investigating", "Remediation", "Resolved", "False Positive"])
+  const [devices, setDevices] = useState<any[]>([])
 
-  // Filter devices based on search query
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/devices/configs`)
+      .then((res) => res.json())
+      .then((data) => {
+        const formattedDevices = data.map((config: any, i: number) => ({
+          id: config._id || `device-${i}`,
+          name: config.hostname || config.sections?.hostname || config.device_ip,
+          type: config.sections?.device_type || "Network",
+          ip: config.device_ip,
+          status: "Online",
+          threats: [...(config.analysis?.misconfigurations || []), ...(config.analysis?.missing_recommendations || [])].map((issue: any, j: number) => ({
+            id: `ANALYSIS-${i}-${j}`,
+            name: issue.type || issue.tag,
+            type: issue.category === "misconfiguration" ? "Misconfiguration" : "Recommendation",
+            description: issue.description,
+            severity: issue.severity[0].toUpperCase() + issue.severity.slice(1),
+            status: "Active",
+            detectedAt: config.received_at,
+            category: issue.category,
+            source: "System",
+            affectedResource: config.device_ip,
+            impactLevel:
+              issue.severity === "critical"
+                ? "High"
+                : issue.severity === "high"
+                ? "High"
+                : issue.severity === "medium"
+                ? "Medium"
+                : "Low",
+            recommendedAction: "Review and correct the configuration",
+          })),
+        }))
+
+        setDevices(formattedDevices)
+      })
+  }, [])
+
   const filteredDevices = devices.filter(
-    (device) => device.name.toLowerCase().includes(searchQuery.toLowerCase()) || device.ip.includes(searchQuery),
+    (device) =>
+      device.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      device.ip?.includes(searchQuery)
   )
 
-  // Count total threats that match filters
   const totalThreats = devices.reduce((count, device) => {
-    return (
-      count +
-      device.threats.filter(
-        (threat) => severityFilter.includes(threat.severity) && statusFilter.includes(threat.status),
-      ).length
-    )
+    return count + device.threats.filter(
+      (threat: any) => severityFilter.includes(threat.severity) && statusFilter.includes(threat.status)
+    ).length
   }, 0)
 
-  // Count active threats
   const activeThreats = devices.reduce((count, device) => {
-    return (
-      count + device.threats.filter((threat) => threat.status === "Active" || threat.status === "Investigating").length
-    )
+    return count + device.threats.filter((threat: any) => threat.status === "Active" || threat.status === "Investigating").length
   }, 0)
 
-  // Toggle device expansion
   const toggleDeviceExpansion = (deviceId: string) => {
     if (expandedDevices.includes(deviceId)) {
       setExpandedDevices(expandedDevices.filter((id) => id !== deviceId))
@@ -353,8 +186,7 @@ export default function ThreatsPage() {
     }
   }
 
-  // Toggle severity filter
-  const toggleSeverityFilter = (severity: ThreatSeverity) => {
+  const toggleSeverityFilter = (severity: string) => {
     if (severityFilter.includes(severity)) {
       setSeverityFilter(severityFilter.filter((s) => s !== severity))
     } else {
@@ -362,8 +194,7 @@ export default function ThreatsPage() {
     }
   }
 
-  // Toggle status filter
-  const toggleStatusFilter = (status: ThreatStatus) => {
+  const toggleStatusFilter = (status: string) => {
     if (statusFilter.includes(status)) {
       setStatusFilter(statusFilter.filter((s) => s !== status))
     } else {
@@ -382,7 +213,7 @@ export default function ThreatsPage() {
         <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-4">
           <div className="flex items-center gap-2 text-xl font-semibold text-white">
             <Shield className="h-6 w-6 text-emerald-500" />
-            <span>NetSecure</span>
+            <span>NetOrb</span>
           </div>
           <Button
             variant="ghost"
@@ -613,7 +444,7 @@ export default function ThreatsPage() {
                   <span className="text-2xl font-bold text-white">
                     {devices.reduce(
                       (count, device) =>
-                        count + device.threats.filter((threat) => threat.severity === "Critical").length,
+                        count + device.threats.filter((threat: Threat) => threat.severity === "Critical").length,
                       0,
                     )}
                   </span>
@@ -669,7 +500,7 @@ export default function ThreatsPage() {
                           ) : (
                             <ChevronRight className="h-5 w-5 text-zinc-400" />
                           )}
-                          {deviceTypeIcons[device.type]}
+                          {deviceTypeIcons[device.type as DeviceType]}
                           <div>
                             <h3 className="font-medium text-white">{device.name}</h3>
                             <p className="text-xs text-zinc-400">{device.ip}</p>
@@ -691,9 +522,9 @@ export default function ThreatsPage() {
                           {device.threats.length > 0 ? (
                             <Badge
                               className={`${
-                                device.threats.some((t) => t.severity === "Critical")
+                                device.threats.some((t: Threat) => t.severity === "Critical")
                                   ? "bg-red-500/10 text-red-500"
-                                  : device.threats.some((t) => t.severity === "High")
+                                  : device.threats.some((t: Threat) => t.severity === "High")
                                     ? "bg-amber-500/10 text-amber-500"
                                     : "bg-blue-500/10 text-blue-500"
                               }`}
@@ -712,14 +543,14 @@ export default function ThreatsPage() {
                           <Separator className="bg-zinc-800" />
                           {device.threats
                             .filter(
-                              (threat) =>
+                              (threat: Threat) =>
                                 severityFilter.includes(threat.severity) && statusFilter.includes(threat.status),
                             )
-                            .map((threat) => (
+                            .map((threat: Threat) => (
                               <div key={threat.id} className="rounded-md border border-zinc-800 bg-zinc-900 p-4">
                                 <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
                                   <div className="flex items-center gap-2">
-                                    {threatSeverityIcons[threat.severity]}
+                                    {threatSeverityIcons[threat.severity as ThreatSeverity]}
                                     <div>
                                       <h4 className="font-medium text-white">{threat.name}</h4>
                                       <p className="text-xs text-zinc-400">{threat.type}</p>
@@ -842,7 +673,7 @@ export default function ThreatsPage() {
                               </div>
                             ))}
                           {device.threats.filter(
-                            (threat) =>
+                            (threat: Threat) =>
                               severityFilter.includes(threat.severity) && statusFilter.includes(threat.status),
                           ).length === 0 && (
                             <div className="flex h-24 flex-col items-center justify-center rounded-md border border-dashed border-zinc-800 p-4 text-center">
