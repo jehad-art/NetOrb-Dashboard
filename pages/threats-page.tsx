@@ -162,8 +162,8 @@ export default function ThreatsPage() {
             recommendedAction: "Review and correct the configuration",
           })),
         }))
-        console.log("Fetched Configs:", data);
-        setDevices(formattedDevices)
+        console.log("Formatted Devices with Threats:", formattedDevices);
+        setDevices(formattedDevices);
       })
       .catch((err) => {
         console.error("Fetch error:", err);
