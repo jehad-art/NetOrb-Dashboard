@@ -159,10 +159,12 @@ export default function ThreatsPage() {
                   recommendedAction: "Review and correct the configuration",
             })),
             }));
-    
+            console.log("Fetched config data:", data);
+            console.log("Formatted devices with threats:", formattedDevices);
             setDevices(formattedDevices);
             setLoading(false);
         });
+        
     }, []);
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
