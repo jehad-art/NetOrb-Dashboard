@@ -126,9 +126,14 @@ export default function ThreatsPage() {
   const [devices, setDevices] = useState<any[]>([])
 
   useEffect(() => {
+    console.log("useEffect triggered");
     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/devices/configs`)
-      .then((res) => res.json())
+      .then((res) => {
+        console.log("Received response:", res);
+        return res.json();
+      })
       .then((data) => {
+        console.log("Fetched Configs:", data);
         const formattedDevices = data.map((config: any, i: number) => ({
           id: config._id || `device-${i}`,
           name: config.hostname || config.sections?.hostname || config.device_ip,
@@ -159,6 +164,9 @@ export default function ThreatsPage() {
         }))
         console.log("Fetched Configs:", data);
         setDevices(formattedDevices)
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
       })
   }, [])
 
