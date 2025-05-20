@@ -36,7 +36,7 @@ body{font-family: 'Maven Pro', sans-serif;color:#444;font-size:10pt;background-c
 .color-state{width:10px;height:10px;background-color:yellow;border:thin solid #888;}
 
 /*Map Details*/
-.map{background-image:url('../Images/map-0.png');background-size:100% 100%;width:33%;height:980px;position:absolute;top:20px;left:0%;border:1px solid #888;box-shadow:2px 2px 5px #ccc;}
+.map{background-image:url('/Images/map-0.png');background-size:100% 100%;width:33%;height:980px;position:absolute;top:20px;left:0%;border:1px solid #888;box-shadow:2px 2px 5px #ccc;}
 .desk-active{position:absolute;top:123px;left:25%;width:6.7%;height:40px;border:1px solid #004488;background-color:#00CCB1;opacity:0.7;cursor:pointer;}
 .desk{position:absolute;top:163px;left:25%;width:6.7%;height:40px;border:1px solid #000;background-color:#777;opacity:0.5;cursor:pointer;transition:background-color .2s,opacity .2s;}
 .desk:hover{background-color:#bbb;opacity:0.7;}
@@ -48,7 +48,7 @@ input[type=button]:hover{background-color:#00CCB1 !important;border:thin solid #
 input[type=text],select,textarea{color:#888;font-weight:bold;border:none;border:thin solid #aaa;outline:none;width:150px;padding: 7px 10px;margin: 5px 0;box-sizing: border-box;background-color:#eee;border-radius:5px}
 input[type=text]:hover,select:hover,textarea:hover{background-color:#ccc !important;}
 input[type=text]:focus,select:focus,textarea:focus{background-color:#ccc !important;}
-.side-bar select{outline:none;width:95%;-webkit-appearance: none;-moz-appearance: none;appearance: none;background: url("../Images/sort-down2.png") 96% / 5% no-repeat #eee;background-color:#444;color:#fff;transition:background-color .2s;border-radius:50px;}
+.side-bar select{outline:none;width:95%;-webkit-appearance: none;-moz-appearance: none;appearance: none;background: url("/Images/sort-down2.png") 96% / 5% no-repeat #eee;background-color:#444;color:#fff;transition:background-color .2s;border-radius:50px;}
 .side-bar select:focus{background-color:#222}
 .side-bar td{padding-left:10px;}
 .small-text{width:80px !important;}
@@ -56,7 +56,7 @@ input[type=text]:focus,select:focus,textarea:focus{background-color:#ccc !import
 .search{width:90% !important;background-color:#bbb !important;border:thin solid #aaa !important;}
 
 /*Others*/
-.pattern{position:relative;top:0px;left:0%;width:100%;height:2px;background-image:url('../Images/pattern.png');}
+.pattern{position:relative;top:0px;left:0%;width:100%;height:2px;background-image:url('/Images/pattern.png');}
 a{color:#017770;text-decoration:none;}
 a:hover{color:#00CCB1;text-decoration:underline;}
 .bullet{width:10px;height:10px;background-color:#00CCB1;border-radius:10px;cursor:pointer;opacity:0.5;}
@@ -71,7 +71,7 @@ a:hover{color:#00CCB1;text-decoration:underline;}
 
 /*Jedo Maps*/
 .Jedo-map{width:98%;height:980px;position:absolute;top:20px;left:0%;border:1px solid #bbb;box-shadow:2px 2px 5px #fff;overflow:hidden;}
-.Jedo-map-Div{width:1810px;height:1180px;position:absolute;top:-100px;left:-100px;background-image:url('../Images/Saudi-map-white.png');background-size:100% 100%;
+.Jedo-map-Div{width:1810px;height:1180px;position:absolute;top:-100px;left:-100px;background-image:url('/Images/Saudi-map-white.png');background-size:100% 100%;
 cursor:grap;cursor: -moz-grab;cursor: -webkit-grab;}
 .Jedo-map-Div:active{cursor: grabbing;cursor: -moz-grabbing;cursor: -webkit-grabbing;}
 .location{width:28px;height:40px;opacity:0.9;position:absolute;left:860px;top:450px;cursor:pointer;}
@@ -109,4 +109,4 @@ cursor:grap;cursor: -moz-grab;cursor: -webkit-grab;}
 .Rack-list-box td:hover{background-color:#ddd;}
 .title-bar{border-bottom:thin solid #bbb;color:#999;font-size:10pt;height:43px;background-color:#fff}
 .title-bar:hover{background-color:#cceeff;}
-.drop-list{position:relative;width:12px;height:6px;background-image:url("../Images/arrr.png");background-size:100% 100%}
+.drop-list{position:relative;width:12px;height:6px;background-image:url("/Images/arrr.png");background-size:100% 100%}
