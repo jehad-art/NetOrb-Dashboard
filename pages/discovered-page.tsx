@@ -322,7 +322,7 @@ export default function DiscoveredPage() {
         <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-4">
           <div className="flex items-center gap-2 text-xl font-semibold text-white">
             <Shield className="h-6 w-6 text-emerald-500" />
-            <span>NetSecure</span>
+            <span>NetOrb</span>
           </div>
           <Button
             variant="ghost"
