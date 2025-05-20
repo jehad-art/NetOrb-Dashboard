@@ -1167,12 +1167,7 @@ export default function ArchitecturePage() {
               onClick={handleBackgroundClick}
             >
               {/* Add SVG filters for glow effects */}
-              <defs>
-                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="5" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-              </defs>
+
               <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
                 {/* Connections */}
                 {filteredDevices.map((device) =>
@@ -1218,27 +1213,14 @@ export default function ArchitecturePage() {
                         e.stopPropagation()
                         handleDeviceClick(device)
                       }}
-                      className="cursor-pointer transition-transform duration-200 hover:scale-110"
+                      className="cursor-pointer"
                     >
                       {/* Device background circle with glow on hover */}
                       <circle
                         r={25}
                         fill={deviceTypeColors[device.type]}
                         opacity={0.2}
-                        className={`${
-                          device.status === "warning" ? "animate-pulse" : ""
-                        } transition-all duration-300 hover:opacity-40`}
-                      />
-
-                      {/* Glow effect circle (visible on hover) */}
-                      <circle
-                        r={30}
-                        fill="none"
-                        stroke={deviceTypeColors[device.type]}
-                        strokeWidth={2}
-                        opacity={0}
-                        filter="url(#glow)"
-                        className="transition-opacity duration-300 group-hover:opacity-70 hover:opacity-70"
+                        className={`${device.status === "warning" ? "animate-pulse" : ""}`}
                       />
 
                       {/* Device icon background */}
