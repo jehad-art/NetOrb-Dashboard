@@ -133,37 +133,40 @@ export default function ThreatsPage() {
         return res.json();
       })
       .then((data) => {
-        console.log("Fetched Configs:", data);
-        const formattedDevices = data.map((config: any, i: number) => ({
-          id: config._id || `device-${i}`,
-          name: config.hostname || config.sections?.hostname || config.device_ip,
+        const formattedDevices = data
+        .filter((config: any) => config.analysis)  // 👈 Exclude configs with no analysis
+        .map((config: any, index: number) => ({
+          id: `device-${index}`,
+          name: config.sections?.hostname || config.device_ip || `Device-${index}`,
           type: config.sections?.device_type || "Network",
           ip: config.device_ip,
           status: "Online",
-          threats: [...(config.analysis?.misconfigurations || []), ...(config.analysis?.missing_recommendations || [])].map((issue: any, j: number) => ({
-            id: `ANALYSIS-${i}-${j}`,
-            name: issue.type || issue.tag,
+          threats: [
+            ...(config.analysis?.misconfigurations || []),
+            ...(config.analysis?.missing_recommendations || [])
+          ].map((issue: any, i: number) => ({
+            id: `ANALYSIS-${index}-${i}`,
+            name: issue.type,
             type: issue.category === "misconfiguration" ? "Misconfiguration" : "Recommendation",
             description: issue.description,
-            severity: issue.severity[0].toUpperCase() + issue.severity.slice(1),
+            severity: issue.severity.charAt(0).toUpperCase() + issue.severity.slice(1),
             status: "Active",
             detectedAt: config.received_at,
             category: issue.category,
             source: "System",
             affectedResource: config.device_ip,
             impactLevel:
-              issue.severity === "critical"
-                ? "High"
-                : issue.severity === "high"
+              issue.severity === "critical" || issue.severity === "high"
                 ? "High"
                 : issue.severity === "medium"
-                ? "Medium"
-                : "Low",
+                  ? "Medium"
+                  : "Low",
             recommendedAction: "Review and correct the configuration",
-          })),
-        }))
-        console.log("Formatted Devices with Threats:", formattedDevices);
-        setDevices(formattedDevices);
+          }))
+        }));
+
+      console.log("Formatted Devices with Analysis:", formattedDevices);  // Should only log valid entries
+      setDevices(formattedDevices);
       })
       .catch((err) => {
         console.error("Fetch error:", err);
