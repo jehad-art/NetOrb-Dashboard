@@ -88,7 +88,7 @@ type DiscoveredDevice = {
 const discoveredDevices: DiscoveredDevice[] = [
   {
     id: "DISC-001",
-    ip: "192.168.1.120",
+    ip: "10.20.51.10",
     mac: "00:1B:44:11:3A:B7",
     firstSeen: "2023-05-20T08:30:00Z",
     lastSeen: "2023-05-20T10:45:00Z",
@@ -248,66 +248,68 @@ export default function DiscoveredPage() {
 
   // Handle form submission
   const handleSubmit = async (deviceId: string) => {
-    const device = discoveredDevices.find((d) => d.id === deviceId)
-    const deviceData = formData[deviceId]
-
+    const device = discoveredDevices.find((d) => d.id === deviceId);
+    const deviceData = formData[deviceId];
+  
     if (!deviceData.deviceType || !deviceData.protocol) {
+      toast({
+        title: "Validation Error",
+        description: "Device type and protocol are required",
+        variant: "destructive",
+      });
+      return;
+    }
+  
+    const updatedDevice = {
+      ip: device?.ip,
+      device_type: deviceData.deviceType,
+      credentials: {
+        username: deviceData.username,
+        password: deviceData.password,
+        protocol: deviceData.protocol,
+      },
+    };
+  
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/devices/${device?.ip}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedDevice),
+      });
+  
+      if (res.ok) {
         toast({
-          title: "Validation Error",
-          description: "Device type and protocol are required",
-          variant: "destructive",
-        })
-        return
-      }
-    
-      try {
-        const res = await axios.put(
-          `https://netorb.onrender.com/devices/${device?.ip}`,
-          {
-            device_type: deviceData.deviceType,
-            protocol: deviceData.protocol,
-            username: deviceData.username,
-            password: deviceData.password,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-    
-        if (res.status === 200) {
-          toast({
-            title: "Device Added",
-            description: `Device ${device?.ip} has been successfully added to the system.`,
-          })
-        } else {
-          toast({
-            title: "API Error",
-            description: `Failed to add device: ${res.statusText}`,
-            variant: "destructive",
-          })
-        }
-      } catch (error: any) {
+          title: "Device Added",
+          description: `Device ${device?.ip} has been successfully added.`,
+        });
+      } else {
+        const errorText = await res.text();
         toast({
-          title: "Request Failed",
-          description: error.message || "An error occurred while submitting the form.",
+          title: "Backend Error",
+          description: errorText,
           variant: "destructive",
-        })
+        });
       }
-    
-      // Reset form and close expansion
-      setFormData({
-        ...formData,
-        [deviceId]: {
-          deviceType: "",
-          protocol: "",
-          username: "",
-          password: "",
-        },
-      })
-      setExpandedDevices(expandedDevices.filter((id) => id !== deviceId))
-  }
+    } catch (err: any) {
+      toast({
+        title: "Network Error",
+        description: err.message || "Unknown error",
+        variant: "destructive",
+      });
+    }
+  
+    // Reset form and close expansion
+    setFormData({
+      ...formData,
+      [deviceId]: {
+        deviceType: "",
+        protocol: "",
+        username: "",
+        password: "",
+      },
+    });
+    setExpandedDevices(expandedDevices.filter((id) => id !== deviceId));
+  };
 
   return (
     <div className="flex h-screen bg-background">
