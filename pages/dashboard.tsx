@@ -3,16 +3,16 @@
 import { useState } from "react"
 import {
   AlertTriangle,
-  ArrowDownRight,
-  ArrowUpRight,
   Bell,
   ChevronDown,
-  Clock,
+  Cpu,
+  Database,
   NetworkIcon as Ethernet,
   FileText,
   HardDrive,
   Home,
   Layers,
+  Lock,
   type LucideIcon,
   Menu,
   MoreHorizontal,
@@ -20,31 +20,17 @@ import {
   Server,
   Settings,
   Shield,
-  ShieldAlert,
-  ShieldCheck,
+  Wifi,
 } from "lucide-react"
 import Image from "next/image"
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 type NavItem = {
   name: string
@@ -55,7 +41,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { name: "Dashboard", icon: Home, href: "#" },
-  { name: "Devices", icon: HardDrive, href: "/devices", alert: 3 },
+  { name: "Devices", icon: HardDrive, href: "#", alert: 3 },
   { name: "Network", icon: Ethernet, href: "#" },
   { name: "Threats", icon: AlertTriangle, href: "#", alert: 5 },
   { name: "Firewall", icon: Shield, href: "#" },
@@ -64,106 +50,78 @@ const navItems: NavItem[] = [
   { name: "Settings", icon: Settings, href: "#" },
 ]
 
-// Security score data
-const securityScoreData = [
-  { name: "Firewall", score: 92, color: "#10b981" },
-  { name: "Endpoints", score: 78, color: "#f59e0b" },
-  { name: "Network", score: 85, color: "#3b82f6" },
-  { name: "Data", score: 90, color: "#8b5cf6" },
-  { name: "Access", score: 72, color: "#ec4899" },
-]
-
-// Overall security score
-const overallSecurityScore = Math.round(
-  securityScoreData.reduce((acc, item) => acc + item.score, 0) / securityScoreData.length,
-)
-
-// Device status data
-const deviceStatusData = [
-  { name: "Online", value: 24, color: "#10b981" },
-  { name: "Offline", value: 3, color: "#6b7280" },
-  { name: "Warning", value: 5, color: "#f59e0b" },
-  { name: "Critical", value: 2, color: "#ef4444" },
-]
-
-// Network traffic data
-const networkTrafficData = [
-  { name: "00:00", inbound: 2.1, outbound: 1.5 },
-  { name: "02:00", inbound: 1.8, outbound: 1.2 },
-  { name: "04:00", inbound: 1.5, outbound: 0.9 },
-  { name: "06:00", inbound: 2.3, outbound: 1.3 },
-  { name: "08:00", inbound: 5.4, outbound: 3.2 },
-  { name: "10:00", inbound: 6.2, outbound: 4.5 },
-  { name: "12:00", inbound: 7.1, outbound: 5.2 },
-  { name: "14:00", inbound: 8.5, outbound: 6.8 },
-  { name: "16:00", inbound: 7.6, outbound: 5.9 },
-  { name: "18:00", inbound: 5.8, outbound: 4.2 },
-  { name: "20:00", inbound: 4.2, outbound: 3.1 },
-  { name: "22:00", inbound: 3.1, outbound: 2.3 },
-]
-
-// Threat detection data
-const threatDetectionData = [
-  { name: "Mon", threats: 3 },
-  { name: "Tue", threats: 5 },
-  { name: "Wed", threats: 2 },
-  { name: "Thu", threats: 7 },
-  { name: "Fri", threats: 4 },
-  { name: "Sat", threats: 1 },
-  { name: "Sun", threats: 3 },
-]
-
-// Device type distribution
-const deviceTypeData = [
-  { name: "Servers", value: 8, color: "#3b82f6" },
-  { name: "Workstations", value: 12, color: "#10b981" },
-  { name: "Mobile", value: 7, color: "#8b5cf6" },
-  { name: "IoT", value: 5, color: "#f59e0b" },
-  { name: "Network", value: 2, color: "#06b6d4" },
-]
-
-// Active threats
-const activeThreats = [
+const devices = [
   {
-    id: 1,
-    name: "Suspicious Login Attempt",
-    device: "Admin Workstation",
-    severity: "High",
-    time: "10 minutes ago",
-    status: "Active",
+    id: "DEV-001",
+    name: "Main Server",
+    ip: "192.168.1.10",
+    mac: "00:1B:44:11:3A:B7",
+    type: "Server",
+    status: "Online",
+    lastSeen: "Just now",
+    risk: "Low",
   },
   {
-    id: 2,
-    name: "Unusual Network Traffic",
-    device: "IoT Gateway",
-    severity: "Medium",
-    time: "25 minutes ago",
-    status: "Investigating",
+    id: "DEV-002",
+    name: "Admin Workstation",
+    ip: "192.168.1.15",
+    mac: "00:1B:44:11:3A:C2",
+    type: "Workstation",
+    status: "Online",
+    lastSeen: "2 mins ago",
+    risk: "Low",
   },
   {
-    id: 3,
-    name: "Outdated Firmware",
-    device: "Network Switch",
-    severity: "Medium",
-    time: "1 hour ago",
-    status: "Remediation",
+    id: "DEV-003",
+    name: "Database Server",
+    ip: "192.168.1.20",
+    mac: "00:1B:44:11:3A:D5",
+    type: "Server",
+    status: "Online",
+    lastSeen: "Just now",
+    risk: "Medium",
   },
   {
-    id: 4,
-    name: "Malware Detected",
-    device: "Sales Laptop",
-    severity: "Critical",
-    time: "30 minutes ago",
-    status: "Quarantined",
+    id: "DEV-004",
+    name: "Guest Laptop",
+    ip: "192.168.1.35",
+    mac: "00:1B:44:11:3B:F1",
+    type: "Mobile",
+    status: "Offline",
+    lastSeen: "3 hours ago",
+    risk: "High",
   },
   {
-    id: 5,
-    name: "Unauthorized Access Attempt",
-    device: "Database Server",
-    severity: "High",
-    time: "15 minutes ago",
-    status: "Active",
+    id: "DEV-005",
+    name: "IoT Gateway",
+    ip: "192.168.1.50",
+    mac: "00:1B:44:11:3C:A2",
+    type: "IoT",
+    status: "Online",
+    lastSeen: "5 mins ago",
+    risk: "Medium",
   },
+  {
+    id: "DEV-006",
+    name: "Development Server",
+    ip: "192.168.1.25",
+    mac: "00:1B:44:11:3A:E7",
+    type: "Server",
+    status: "Online",
+    lastSeen: "Just now",
+    risk: "Low",
+  },
+]
+
+const ports = [
+  { id: 1, name: "Port 1", status: "active", type: "RJ45", speed: "1 Gbps", device: "Main Server" },
+  { id: 2, name: "Port 2", status: "active", type: "RJ45", speed: "1 Gbps", device: "Admin Workstation" },
+  { id: 3, name: "Port 3", status: "active", type: "RJ45", speed: "1 Gbps", device: "Database Server" },
+  { id: 4, name: "Port 4", status: "inactive", type: "RJ45", speed: "1 Gbps", device: "None" },
+  { id: 5, name: "Port 5", status: "warning", type: "RJ45", speed: "100 Mbps", device: "IoT Gateway" },
+  { id: 6, name: "Port 6", status: "active", type: "RJ45", speed: "1 Gbps", device: "Development Server" },
+  { id: 7, name: "Port 7", status: "inactive", type: "RJ45", speed: "1 Gbps", device: "None" },
+  { id: 8, name: "Port 8", status: "inactive", type: "RJ45", speed: "1 Gbps", device: "None" },
 ]
 
 export default function Dashboard() {
@@ -180,7 +138,7 @@ export default function Dashboard() {
         <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-4">
           <div className="flex items-center gap-2 text-xl font-semibold text-white">
             <Shield className="h-6 w-6 text-emerald-500" />
-            <span>NetSecure</span>
+            <span>NetOrb</span>
           </div>
           <Button
             variant="ghost"
@@ -265,15 +223,12 @@ export default function Dashboard() {
         {/* Dashboard Content */}
         <main className="flex-1 overflow-auto bg-zinc-950 p-6">
           <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">Security Dashboard</h1>
-              <p className="text-sm text-zinc-400">Last updated: Today at 10:45 AM</p>
-            </div>
+            <h1 className="text-2xl font-bold text-white">Network Security Dashboard</h1>
             <div className="flex items-center gap-2">
               <Button variant="outline" className="border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-white">
-                Export Report
+                Export
               </Button>
-              <Button className="bg-emerald-600 text-white hover:bg-emerald-700">Run Security Scan</Button>
+              <Button className="bg-emerald-600 text-white hover:bg-emerald-700">Scan Network</Button>
             </div>
           </div>
 
@@ -281,24 +236,14 @@ export default function Dashboard() {
           <div className="mb-6 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader className="pb-2">
-                <CardTitle className="text-zinc-400 text-sm font-medium">Security Score</CardTitle>
+                <CardTitle className="text-zinc-400 text-sm font-medium">Connected Devices</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center">
-                  {overallSecurityScore >= 80 ? (
-                    <ShieldCheck className="mr-2 h-5 w-5 text-emerald-500" />
-                  ) : overallSecurityScore >= 60 ? (
-                    <Shield className="mr-2 h-5 w-5 text-amber-500" />
-                  ) : (
-                    <ShieldAlert className="mr-2 h-5 w-5 text-red-500" />
-                  )}
-                  <span className="text-2xl font-bold text-white">{overallSecurityScore}/100</span>
+                  <HardDrive className="mr-2 h-5 w-5 text-emerald-500" />
+                  <span className="text-2xl font-bold text-white">24</span>
                 </div>
-                <div className="mt-2 flex items-center text-xs">
-                  <ArrowUpRight className="mr-1 h-3 w-3 text-emerald-500" />
-                  <span className="text-emerald-500">+3 points</span>
-                  <span className="ml-1 text-zinc-500">since last week</span>
-                </div>
+                <p className="mt-2 text-xs text-zinc-500">5 new devices today</p>
               </CardContent>
             </Card>
             <Card className="bg-zinc-900 border-zinc-800">
@@ -310,11 +255,7 @@ export default function Dashboard() {
                   <AlertTriangle className="mr-2 h-5 w-5 text-red-500" />
                   <span className="text-2xl font-bold text-white">5</span>
                 </div>
-                <div className="mt-2 flex items-center text-xs">
-                  <ArrowDownRight className="mr-1 h-3 w-3 text-emerald-500" />
-                  <span className="text-emerald-500">-2 threats</span>
-                  <span className="ml-1 text-zinc-500">since yesterday</span>
-                </div>
+                <p className="mt-2 text-xs text-zinc-500">2 critical threats</p>
               </CardContent>
             </Card>
             <Card className="bg-zinc-900 border-zinc-800">
@@ -326,328 +267,202 @@ export default function Dashboard() {
                   <Layers className="mr-2 h-5 w-5 text-blue-500" />
                   <span className="text-2xl font-bold text-white">68%</span>
                 </div>
-                <div className="mt-2 flex items-center text-xs">
-                  <ArrowUpRight className="mr-1 h-3 w-3 text-amber-500" />
-                  <span className="text-amber-500">+12%</span>
-                  <span className="ml-1 text-zinc-500">peak at 10:30 AM</span>
-                </div>
+                <p className="mt-2 text-xs text-zinc-500">12.4 GB/s current throughput</p>
               </CardContent>
             </Card>
             <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader className="pb-2">
-                <CardTitle className="text-zinc-400 text-sm font-medium">Device Status</CardTitle>
+                <CardTitle className="text-zinc-400 text-sm font-medium">Security Score</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center">
-                  <HardDrive className="mr-2 h-5 w-5 text-emerald-500" />
-                  <span className="text-2xl font-bold text-white">34</span>
+                  <Lock className="mr-2 h-5 w-5 text-amber-500" />
+                  <span className="text-2xl font-bold text-white">86/100</span>
                 </div>
-                <div className="mt-2 flex items-center text-xs">
-                  <span className="text-emerald-500">24 online</span>
-                  <span className="mx-1 text-zinc-500">•</span>
-                  <span className="text-amber-500">5 warning</span>
-                  <span className="mx-1 text-zinc-500">•</span>
-                  <span className="text-red-500">2 critical</span>
-                </div>
+                <p className="mt-2 text-xs text-zinc-500">3 recommendations</p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Charts Row 1 */}
-          <div className="mb-6 grid gap-6 lg:grid-cols-2">
-            {/* Security Score Breakdown */}
-            <Card className="bg-zinc-900 border-zinc-800">
-              <CardHeader>
-                <CardTitle className="text-white">Security Score Breakdown</CardTitle>
-                <CardDescription className="text-zinc-400">Score by security category</CardDescription>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {/* Device Table */}
+            <Card className="lg:col-span-2 bg-zinc-900 border-zinc-800">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div>
+                  <CardTitle className="text-white">Connected Devices</CardTitle>
+                  <CardDescription className="text-zinc-400">All devices on your network</CardDescription>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>Refresh</DropdownMenuItem>
+                    <DropdownMenuItem>Export</DropdownMenuItem>
+                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {securityScoreData.map((item) => (
-                    <div key={item.name} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <div className="mr-2 h-3 w-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                          <span className="text-sm text-zinc-400">{item.name}</span>
-                        </div>
-                        <span className="text-sm font-medium text-white">{item.score}/100</span>
-                      </div>
-                      <Progress
-                        value={item.score}
-                        className="h-2 bg-zinc-800"
-                        indicatorClassName={`${
-                          item.score >= 90
-                            ? "bg-emerald-500"
-                            : item.score >= 80
-                              ? "bg-green-500"
-                              : item.score >= 70
-                                ? "bg-amber-500"
-                                : "bg-red-500"
-                        }`}
-                      />
-                    </div>
-                  ))}
+                <div className="rounded-md border border-zinc-800">
+                  <Table>
+                    <TableHeader className="bg-zinc-800/50">
+                      <TableRow className="hover:bg-zinc-800/70 border-zinc-800">
+                        <TableHead className="text-zinc-400">Device</TableHead>
+                        <TableHead className="text-zinc-400">IP Address</TableHead>
+                        <TableHead className="text-zinc-400">Status</TableHead>
+                        <TableHead className="text-zinc-400">Last Seen</TableHead>
+                        <TableHead className="text-zinc-400">Risk</TableHead>
+                        <TableHead className="text-zinc-400 text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {devices.map((device) => (
+                        <TableRow key={device.id} className="hover:bg-zinc-800/50 border-zinc-800">
+                          <TableCell className="font-medium text-white">
+                            <div className="flex items-center gap-2">
+                              {device.type === "Server" ? (
+                                <Server className="h-4 w-4 text-blue-500" />
+                              ) : device.type === "Workstation" ? (
+                                <Cpu className="h-4 w-4 text-emerald-500" />
+                              ) : device.type === "Mobile" ? (
+                                <Wifi className="h-4 w-4 text-purple-500" />
+                              ) : device.type === "IoT" ? (
+                                <Database className="h-4 w-4 text-amber-500" />
+                              ) : (
+                                <HardDrive className="h-4 w-4 text-zinc-500" />
+                              )}
+                              {device.name}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-zinc-400">{device.ip}</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={device.status === "Online" ? "outline" : "secondary"}
+                              className={`${
+                                device.status === "Online"
+                                  ? "border-emerald-500 text-emerald-500"
+                                  : "border-zinc-600 text-zinc-400"
+                              }`}
+                            >
+                              {device.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-zinc-400">{device.lastSeen}</TableCell>
+                          <TableCell>
+                            <Badge
+                              className={`${
+                                device.risk === "Low"
+                                  ? "bg-emerald-500/10 text-emerald-500"
+                                  : device.risk === "Medium"
+                                    ? "bg-amber-500/10 text-amber-500"
+                                    : "bg-red-500/10 text-red-500"
+                              }`}
+                            >
+                              {device.risk}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem>View Details</DropdownMenuItem>
+                                <DropdownMenuItem>Block Device</DropdownMenuItem>
+                                <DropdownMenuItem>Scan Device</DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Network Traffic */}
+            {/* Port Layout Panel */}
             <Card className="bg-zinc-900 border-zinc-800">
-              <CardHeader>
-                <CardTitle className="text-white">Network Traffic</CardTitle>
-                <CardDescription className="text-zinc-400">24-hour traffic pattern (GB)</CardDescription>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white">Port Layout</CardTitle>
+                <CardDescription className="text-zinc-400">Network switch port status</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[300px]">
-                  <ChartContainer
-                    config={{
-                      inbound: {
-                        label: "Inbound",
-                        color: "hsl(var(--chart-1))",
-                      },
-                      outbound: {
-                        label: "Outbound",
-                        color: "hsl(var(--chart-2))",
-                      },
-                    }}
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={networkTrafficData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id="colorInbound" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="var(--color-inbound)" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="var(--color-inbound)" stopOpacity={0} />
-                          </linearGradient>
-                          <linearGradient id="colorOutbound" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="var(--color-outbound)" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="var(--color-outbound)" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <XAxis dataKey="name" stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
-                        <YAxis stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Area
-                          type="monotone"
-                          dataKey="inbound"
-                          stroke="var(--color-inbound)"
-                          fillOpacity={1}
-                          fill="url(#colorInbound)"
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="outbound"
-                          stroke="var(--color-outbound)"
-                          fillOpacity={1}
-                          fill="url(#colorOutbound)"
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Charts Row 2 */}
-          <div className="mb-6 grid gap-6 lg:grid-cols-3">
-            {/* Device Status Distribution */}
-            <Card className="bg-zinc-900 border-zinc-800">
-              <CardHeader>
-                <CardTitle className="text-white">Device Status</CardTitle>
-                <CardDescription className="text-zinc-400">Current device status distribution</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex h-[250px] items-center justify-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={deviceStatusData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={2}
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                        labelLine={false}
-                      >
-                        {deviceStatusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value, name) => [`${value} devices`, name]}
-                        contentStyle={{ background: "#18181b", border: "1px solid #27272a", borderRadius: "6px" }}
-                        itemStyle={{ color: "#f4f4f5" }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-2 flex flex-wrap justify-center gap-3">
-                  {deviceStatusData.map((item) => (
-                    <div key={item.name} className="flex items-center">
-                      <div className="mr-1 h-3 w-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                      <span className="text-xs text-zinc-400">
-                        {item.name}: {item.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Device Type Distribution */}
-            <Card className="bg-zinc-900 border-zinc-800">
-              <CardHeader>
-                <CardTitle className="text-white">Device Types</CardTitle>
-                <CardDescription className="text-zinc-400">Distribution by device category</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex h-[250px] items-center justify-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={deviceTypeData}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                        labelLine={false}
-                      >
-                        {deviceTypeData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value, name) => [`${value} devices`, name]}
-                        contentStyle={{ background: "#18181b", border: "1px solid #27272a", borderRadius: "6px" }}
-                        itemStyle={{ color: "#f4f4f5" }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-2 flex flex-wrap justify-center gap-3">
-                  {deviceTypeData.map((item) => (
-                    <div key={item.name} className="flex items-center">
-                      <div className="mr-1 h-3 w-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                      <span className="text-xs text-zinc-400">
-                        {item.name}: {item.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Threat Detection Trend */}
-            <Card className="bg-zinc-900 border-zinc-800">
-              <CardHeader>
-                <CardTitle className="text-white">Threat Detection</CardTitle>
-                <CardDescription className="text-zinc-400">7-day threat detection trend</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[250px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={threatDetectionData} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
-                      <XAxis dataKey="name" stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
-                      <Tooltip
-                        formatter={(value) => [`${value} threats`, "Detected"]}
-                        contentStyle={{ background: "#18181b", border: "1px solid #27272a", borderRadius: "6px" }}
-                        itemStyle={{ color: "#f4f4f5" }}
-                      />
-                      <Bar dataKey="threats" fill="#ef4444" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Active Threats */}
-          <Card className="bg-zinc-900 border-zinc-800">
-            <CardHeader>
-              <CardTitle className="text-white">Active Threats</CardTitle>
-              <CardDescription className="text-zinc-400">
-                Current security incidents requiring attention
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {activeThreats.map((threat) => (
-                  <div
-                    key={threat.id}
-                    className="flex flex-col rounded-lg border border-zinc-800 bg-zinc-900 p-4 sm:flex-row sm:items-center"
-                  >
-                    <div className="mb-3 flex items-center sm:mb-0 sm:w-1/4">
-                      <div
-                        className={`mr-3 flex h-10 w-10 items-center justify-center rounded-full ${
-                          threat.severity === "Critical"
-                            ? "bg-red-500/10"
-                            : threat.severity === "High"
-                              ? "bg-amber-500/10"
-                              : "bg-blue-500/10"
-                        }`}
-                      >
-                        <AlertTriangle
-                          className={`h-5 w-5 ${
-                            threat.severity === "Critical"
-                              ? "text-red-500"
-                              : threat.severity === "High"
-                                ? "text-amber-500"
-                                : "text-blue-500"
+                <Tabs defaultValue="status">
+                  <TabsList className="grid w-full grid-cols-2 bg-zinc-800">
+                    <TabsTrigger value="status">Status</TabsTrigger>
+                    <TabsTrigger value="details">Details</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="status" className="mt-4">
+                    <div className="grid grid-cols-4 gap-2">
+                      {ports.map((port) => (
+                        <div
+                          key={port.id}
+                          className={`flex aspect-square flex-col items-center justify-center rounded-md border p-2 text-xs ${
+                            port.status === "active"
+                              ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-500"
+                              : port.status === "warning"
+                                ? "border-amber-500/20 bg-amber-500/10 text-amber-500"
+                                : "border-zinc-800 bg-zinc-800/50 text-zinc-500"
                           }`}
-                        />
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-white">{threat.name}</h4>
-                        <p className="text-xs text-zinc-400">{threat.device}</p>
-                      </div>
+                        >
+                          <Ethernet
+                            className={`mb-1 h-5 w-5 ${
+                              port.status === "active"
+                                ? "text-emerald-500"
+                                : port.status === "warning"
+                                  ? "text-amber-500"
+                                  : "text-zinc-500"
+                            }`}
+                          />
+                          <span className="font-medium">{port.name}</span>
+                        </div>
+                      ))}
                     </div>
-                    <div className="mb-3 flex items-center sm:mb-0 sm:w-1/4">
-                      <Badge
-                        className={`${
-                          threat.severity === "Critical"
-                            ? "bg-red-500/10 text-red-500"
-                            : threat.severity === "High"
-                              ? "bg-amber-500/10 text-amber-500"
-                              : "bg-blue-500/10 text-blue-500"
-                        }`}
-                      >
-                        {threat.severity}
-                      </Badge>
+                  </TabsContent>
+                  <TabsContent value="details">
+                    <div className="rounded-md border border-zinc-800">
+                      <Table>
+                        <TableHeader className="bg-zinc-800/50">
+                          <TableRow className="hover:bg-zinc-800/70 border-zinc-800">
+                            <TableHead className="text-zinc-400">Port</TableHead>
+                            <TableHead className="text-zinc-400">Status</TableHead>
+                            <TableHead className="text-zinc-400">Device</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {ports.map((port) => (
+                            <TableRow key={port.id} className="hover:bg-zinc-800/50 border-zinc-800">
+                              <TableCell className="font-medium text-white">{port.name}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  className={`${
+                                    port.status === "active"
+                                      ? "bg-emerald-500/10 text-emerald-500"
+                                      : port.status === "warning"
+                                        ? "bg-amber-500/10 text-amber-500"
+                                        : "bg-zinc-800 text-zinc-400"
+                                  }`}
+                                >
+                                  {port.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-zinc-400">{port.device}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </div>
-                    <div className="mb-3 flex items-center sm:mb-0 sm:w-1/4">
-                      <Badge
-                        variant="outline"
-                        className={`${
-                          threat.status === "Active"
-                            ? "border-red-500 text-red-500"
-                            : threat.status === "Investigating"
-                              ? "border-amber-500 text-amber-500"
-                              : threat.status === "Remediation"
-                                ? "border-blue-500 text-blue-500"
-                                : "border-emerald-500 text-emerald-500"
-                        }`}
-                      >
-                        {threat.status}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between sm:w-1/4 sm:justify-end">
-                      <div className="flex items-center text-xs text-zinc-400">
-                        <Clock className="mr-1 h-3 w-3" />
-                        {threat.time}
-                      </div>
-                      <Button variant="ghost" size="icon" className="ml-2 text-zinc-400 hover:text-white">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </div>
         </main>
       </div>
     </div>
