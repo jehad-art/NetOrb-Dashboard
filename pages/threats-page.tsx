@@ -136,19 +136,27 @@ export default function ThreatsPage() {
             type: config.device_type || "Network",
             ip: config.device_ip,
             status: "Online",
-            threats: [...(config.analysis?.misconfigurations || []), ...(config.analysis?.missing_recommendations || [])].map((issue: any, i: number) => ({
-                id: `ANALYSIS-${i}`,
-                name: issue.tag,
-                type: issue.category === "misconfiguration" ? "Misconfiguration" : "Recommendation",
-                description: issue.description,
-                severity: issue.severity[0].toUpperCase() + issue.severity.slice(1),
-                status: "Active",
-                detectedAt: config.collected_at,
-                category: issue.category,
-                source: "System",
-                affectedResource: config.device_ip,
-                impactLevel: issue.severity === "critical" ? "High" : issue.severity === "high" ? "High" : issue.severity === "medium" ? "Medium" : "Low",
-                recommendedAction: "Review and correct the configuration",
+            threats: [...(config.analysis?.misconfigurations || []), ...(config.analysis?.missing_recommendations || [])].map(
+                (issue: any, i: number) => ({
+                  id: `ANALYSIS-${i}`,
+                  name: issue.type || "Unknown",
+                  type: issue.category === "misconfiguration" ? "Misconfiguration" : "Recommendation",
+                  description: issue.description,
+                  severity: issue.severity[0].toUpperCase() + issue.severity.slice(1),
+                  status: "Active",
+                  detectedAt: config.received_at,
+                  category: issue.category,
+                  source: "System",
+                  affectedResource: config.sections?.device_type || config.device_ip,
+                  impactLevel:
+                    issue.severity === "critical"
+                      ? "High"
+                      : issue.severity === "high"
+                      ? "High"
+                      : issue.severity === "medium"
+                      ? "Medium"
+                      : "Low",
+                  recommendedAction: "Review and correct the configuration",
             })),
             }));
     
