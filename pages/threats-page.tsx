@@ -309,7 +309,7 @@ const threatSeverityIcons = {
   Low: <ShieldCheck className="h-5 w-5 text-emerald-500" />,
 }
 
-export function ThreatsPage() {
+export default function ThreatsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [expandedDevices, setExpandedDevices] = useState<string[]>([])
