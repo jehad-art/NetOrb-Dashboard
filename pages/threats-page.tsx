@@ -105,8 +105,8 @@ type Device = {
 const devices: Device[] = [
   {
     id: "DEV-001",
-    name: "Main Server",
-    type: "Server",
+    name: "R01",
+    type: "Network",
     ip: "10.20.51.10",
     status: "Online",
     threats: [
@@ -144,9 +144,9 @@ const devices: Device[] = [
   },
   {
     id: "DEV-002",
-    name: "Database Server",
+    name: "Linux Server",
     type: "Server",
-    ip: "192.168.1.20",
+    ip: "10.20.51.2",
     status: "Warning",
     threats: [
       {
